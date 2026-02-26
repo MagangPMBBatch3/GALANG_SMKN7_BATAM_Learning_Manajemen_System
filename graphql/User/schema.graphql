@@ -1,0 +1,104 @@
+type User {
+    id: ID!
+    email: String!
+    name: String!
+    username: String
+    bio: String
+    avatar_url: String
+    is_active: Boolean!
+    last_login_at: DateTime
+    created_at: DateTime!
+    updated_at: DateTime!
+    roles: [Role!]!
+    enrollments: [Enrollment!]!
+    courses: [Course!]!
+    reviews: [CourseReview!]!
+    wishlists: [Wishlist!]!
+    notifications: [Notification!]!
+    badges: [Badge!]!
+    points: [Point!]!
+    forum_threads: [ForumThread!]!
+    forum_posts: [ForumPost!]!
+    quiz_submissions: [QuizSubmission!]!
+    lesson_progress: [LessonProgress!]!
+    certificates: [Certificate!]!
+    audit_logs: [AuditLog!]!
+}
+
+type Role {
+    id: ID!
+    name: String!
+    display_name: String
+    description: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    users: [User!]!
+}
+
+type UserRole {
+    user_id: ID!
+    role_id: ID!
+    assigned_by: ID
+    assigned_at: DateTime!
+    user: User! @belongsTo
+    role: Role! @belongsTo
+    assigned_by_user: User @belongsTo
+}
+input CreateUserInput {
+    email: String!
+    password: String!
+    name: String!
+    username: String
+    bio: String
+    avatar_url: String
+    role_ids: [ID!]
+}
+
+input UpdateUserInput {
+    email: String
+    name: String
+    username: String
+    bio: String
+    avatar_url: String
+    is_active: Boolean
+}
+
+input CreateRoleInput {
+    name: String!
+    display_name: String
+    description: String
+}
+
+input UpdateRoleInput {
+    name: String
+    display_name: String
+    description: String
+}
+
+input AssignRoleInput {
+    user_id: ID!
+    role_id: ID!
+}
+
+extend type Query {
+    users(first: Int, page: Int): [User!]! @paginate
+    user(id: ID!): User
+    me: User
+    roles(first: Int, page: Int): [Role!]! @paginate
+    role(id: ID!): Role
+    userRoles(user_id: ID!): [UserRole!]!
+}
+
+extend type Mutation {
+    createUser(input: CreateUserInput!): User!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateUser@__invoke")
+    updateUser(id: ID!, input: UpdateUserInput!): User!
+        @field(resolver: "App\\GraphQL\\Mutations\\UpdateUser@__invoke")
+    deleteUser(id: ID!): Boolean!
+        @field(resolver: "App\\GraphQL\\Mutations\\DeleteUser@__invoke")
+    createRole(input: CreateRoleInput!): Role! @create
+    updateRole(id: ID!, input: UpdateRoleInput!): Role! @update
+    deleteRole(id: ID!): Boolean!
+    assignRole(input: AssignRoleInput!): UserRole!
+    revokeRole(user_id: ID!, role_id: ID!): Boolean!
+}

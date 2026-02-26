@@ -1,0 +1,47 @@
+enum CourseStatus {
+    DRAFT
+    PUBLISHED
+    ARCHIVED
+}
+
+enum CourseLevel {
+    BEGINNER
+    INTERMEDIATE
+    EXPERT
+}
+
+enum ContentType {
+    VIDEO
+    ARTICLE
+    PDF
+    AUDIO
+    QUIZ
+    OTHER
+}
+
+enum EnrollmentStatus {
+    ACTIVE
+    COMPLETED
+    CANCELED
+    EXPIRED
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    FAILED
+    REFUNDED
+}
+
+enum QuestionType {
+    MCQ
+    TRUEFALSE
+    ESSAY
+    MULTI_SELECT
+}
+
+enum SubmissionStatus {
+    IN_PROGRESS
+    COMPLETED
+    GRADED
+}

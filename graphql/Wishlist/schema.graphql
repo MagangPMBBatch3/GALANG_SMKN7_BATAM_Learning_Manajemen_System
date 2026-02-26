@@ -1,0 +1,23 @@
+type Wishlist {
+    id: ID!
+    user_id: ID!
+    course_id: ID!
+    added_at: DateTime!
+    user: User! @belongsTo
+    course: Course! @belongsTo
+}
+
+input AddToWishlistInput {
+    course_id: ID!
+}
+
+extend type Query {
+    wishlists(user_id: ID!, first: Int, page: Int): [Wishlist!]! @paginate
+    wishlist(id: ID!): Wishlist @find
+    isInWishlist(course_id: ID!): Boolean!
+}
+
+extend type Mutation {
+    addToWishlist(input: AddToWishlistInput!): Wishlist! @create
+    removeFromWishlist(course_id: ID!): Boolean!
+}

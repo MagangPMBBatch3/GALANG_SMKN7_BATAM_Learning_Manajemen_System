@@ -1,0 +1,216 @@
+type Category {
+    id: ID!
+    name: String!
+    slug: String!
+    description: String
+    parent_id: ID
+    created_at: DateTime!
+    updated_at: DateTime!
+    parent: Category @belongsTo
+    children: [Category!]!
+    courses: [Course!]!
+}
+
+type Course {
+    id: ID!
+    instructor_id: ID!
+    category_id: ID
+    title: String!
+    slug: String!
+    short_description: String
+    full_description: String
+    price: Float!
+    currency: String!
+    is_published: Boolean!
+    status: CourseStatus!
+    level: CourseLevel!
+    duration_minutes: Int!
+    thumbnail_url: String
+    rating_avg: Float!
+    rating_count: Int!
+    enrollments_count: Int! @count(relation: "enrollments")
+    created_at: DateTime!
+    updated_at: DateTime!
+    instructor: User! @belongsTo
+    category: Category @belongsTo
+    modules: [CourseModule!]!
+    enrollments: [Enrollment!]!
+    reviews: [CourseReview!]!
+    wishlists: [Wishlist!]!
+    quizzes: [Quiz!]!
+    forum_threads: [ForumThread!]!
+    certificates: [Certificate!]!
+}
+
+type CourseModule {
+    id: ID!
+    course_id: ID!
+    title: String!
+    position: Int!
+    description: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    course: Course! @belongsTo
+    lessons: [Lesson!]!
+}
+
+type Lesson {
+    id: ID!
+    module_id: ID!
+    course_id: ID!
+    title: String!
+    slug: String
+    content_type: ContentType!
+    content: String
+    media_url: String
+    duration_seconds: Int!
+    is_downloadable: Boolean!
+    position: Int!
+    created_at: DateTime!
+    updated_at: DateTime!
+    module: CourseModule! @belongsTo
+    course: Course! @belongsTo
+    resources: [LessonResource!]!
+    progress: [LessonProgress!]!
+    quizzes: [Quiz!]!
+    forum_threads: [ForumThread!]!
+}
+
+type LessonResource {
+    id: ID!
+    lesson_id: ID!
+    title: String
+    file_url: String!
+    file_size_bytes: Int
+    created_at: DateTime!
+    updated_at: DateTime!
+    lesson: Lesson! @belongsTo
+}
+
+input CreateCategoryInput {
+    name: String!
+    slug: String!
+    description: String
+    parent_id: ID
+}
+
+input UpdateCategoryInput {
+    name: String
+    slug: String
+    description: String
+    parent_id: ID
+}
+
+input CreateCourseInput {
+    instructor_id: ID!
+    category_id: ID
+    title: String!
+    slug: String!
+    short_description: String
+    full_description: String
+    price: Float
+    currency: String
+    level: CourseLevel
+    duration_minutes: Int
+    thumbnail_url: String
+}
+
+input UpdateCourseInput {
+    category_id: ID
+    title: String
+    slug: String
+    short_description: String
+    full_description: String
+    price: Float
+    currency: String
+    is_published: Boolean
+    status: CourseStatus
+    level: CourseLevel
+    duration_minutes: Int
+    thumbnail_url: String
+}
+
+input CreateModuleInput {
+    course_id: ID!
+    title: String!
+    position: Int
+    description: String
+}
+
+input UpdateModuleInput {
+    title: String
+    position: Int
+    description: String
+}
+
+input CreateLessonInput {
+    module_id: ID!
+    course_id: ID!
+    title: String!
+    slug: String
+    content_type: ContentType
+    content: String
+    media_url: String
+    duration_seconds: Int
+    is_downloadable: Boolean
+    position: Int
+}
+
+input UpdateLessonInput {
+    title: String
+    slug: String
+    content_type: ContentType
+    content: String
+    media_url: String
+    duration_seconds: Int
+    is_downloadable: Boolean
+    position: Int
+}
+
+input CreateResourceInput {
+    lesson_id: ID!
+    title: String
+    file_url: String!
+    file_size_bytes: Int
+}
+
+input UpdateResourceInput {
+    title: String
+    file_url: String
+    file_size_bytes: Int
+}
+
+extend type Query {
+    categories(first: Int, page: Int): [Category!]! @paginate
+    category(id: ID!): Category
+    courses(first: Int, page: Int, filter: CourseFilter): [Course!]! @paginate
+    course(id: ID!): Course
+    courseBySlug(slug: String!): Course
+    courseModules(course_id: ID!, first: Int, page: Int): [CourseModule!]! @paginate
+    courseModule(id: ID!): CourseModule
+    lessons(course_id: ID, module_id: ID, first: Int, page: Int): [Lesson!]! @paginate
+    lesson(id: ID!): Lesson
+    lessonResources(lesson_id: ID!, first: Int, page: Int): [LessonResource!]! @paginate
+    lessonResource(id: ID!): LessonResource
+}
+
+extend type Mutation {
+    createCategory(input: CreateCategoryInput!): Category! @create
+    updateCategory(id: ID!, input: UpdateCategoryInput!): Category! @update
+    deleteCategory(id: ID!): Boolean! @delete
+    createCourse(input: CreateCourseInput!): Course! @create
+    updateCourse(id: ID!, input: UpdateCourseInput!): Course! @update
+    deleteCourse(id: ID!): Boolean! @delete
+    publishCourse(id: ID!): Course!
+    createModule(input: CreateModuleInput!): CourseModule! @create
+    updateModule(id: ID!, input: UpdateModuleInput!): CourseModule! @update
+    deleteModule(id: ID!): Boolean! @delete
+    reorderModules(course_id: ID!, module_ids: [ID!]!): [CourseModule!]!
+    createLesson(input: CreateLessonInput!): Lesson! @create
+    updateLesson(id: ID!, input: UpdateLessonInput!): Lesson! @update
+    deleteLesson(id: ID!): Boolean! @delete
+    reorderLessons(module_id: ID!, lesson_ids: [ID!]!): [Lesson!]!
+    createResource(input: CreateResourceInput!): LessonResource! @create
+    updateResource(id: ID!, input: UpdateResourceInput!): LessonResource! @update
+    deleteResource(id: ID!): Boolean! @delete
+}

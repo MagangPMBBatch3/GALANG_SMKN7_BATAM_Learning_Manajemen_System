@@ -1,0 +1,45 @@
+type Notification {
+    id: ID!
+    user_id: ID!
+    type: String!
+    title: String!
+    message: String
+    payload: String
+    is_read: Boolean!
+    sent_at: DateTime!
+    created_at: DateTime!
+    user: User! @belongsTo
+}
+
+input CreateNotificationInput {
+    user_id: ID!
+    type: String!
+    payload: String
+}
+
+input UpdateNotificationInput {
+    is_read: Boolean
+    title: String
+    message: String
+    type: String
+}
+
+extend type Query {
+    notifications(
+        user_id: ID!
+        is_read: Boolean
+        first: Int
+        page: Int
+    ): [Notification!]! @paginate
+    notification(id: ID!): Notification
+}
+
+extend type Mutation {
+    createNotification(input: CreateNotificationInput!): Notification!
+        @create(model: "Notification")
+    updateNotification(id: ID!, input: UpdateNotificationInput!): Notification!
+        @update(model: "Notification")
+    deleteNotification(id: ID!): Boolean! @delete(model: "Notification")
+    markNotificationRead(id: ID!): Notification!
+    markAllNotificationsRead(user_id: ID!): Boolean!
+}

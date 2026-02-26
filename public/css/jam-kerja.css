@@ -1,0 +1,104 @@
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table-jam-kerja th {
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+}
+
+.table-jam-kerja td {
+    vertical-align: middle;
+}
+
+.btn-group-sm .btn {
+    margin-right: 2px;
+}
+
+.modal-lg {
+    max-width: 900px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.select2-container--default .select2-selection--single {
+    height: 38px;
+    border: 1px solid #ced4da;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 38px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+}
+
+@media (max-width: 768px) {
+    .modal-lg {
+        max-width: 95%;
+        margin: 10px;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.action-btn {
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.125rem;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}

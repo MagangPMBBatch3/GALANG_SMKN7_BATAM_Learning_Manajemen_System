@@ -1,0 +1,43 @@
+type CourseStats {
+    total_students: Int!
+    total_enrollments: Int!
+    average_rating: Float!
+    total_reviews: Int!
+    completion_rate: Float!
+    revenue: Float!
+}
+
+type UserStats {
+    total_courses_enrolled: Int!
+    total_courses_completed: Int!
+    total_quizzes_taken: Int!
+    average_quiz_score: Float!
+    total_points: Int!
+    total_badges: Int!
+}
+
+type SystemStats {
+    total_users: Int!
+    total_courses: Int!
+    total_enrollments: Int!
+    total_payments: Float!
+    total_revenue: Float!
+    active_users_last_30_days: Int!
+}
+
+input CourseFilter {
+    category_id: ID
+    instructor_id: ID
+    level: CourseLevel
+    status: CourseStatus
+    is_published: Boolean
+    price_min: Float
+    price_max: Float
+    search: String
+}
+
+extend type Query {
+    courseStats(course_id: ID!): CourseStats!
+    userStats(user_id: ID!): UserStats!
+    systemStats: SystemStats!
+}

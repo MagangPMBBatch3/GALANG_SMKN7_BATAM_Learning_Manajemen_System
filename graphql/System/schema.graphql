@@ -1,0 +1,45 @@
+type SystemSetting {
+    key: String!
+    value: String
+    updated_at: DateTime!
+}
+
+type AuditLog {
+    id: ID!
+    user_id: ID
+    action: String
+    resource_type: String
+    resource_id: String
+    ip_address: String
+    user_agent: String
+    data: String
+    created_at: DateTime!
+    user: User @belongsTo
+}
+
+input UpdateSystemSettingInput {
+    key: String!
+    value: String!
+}
+
+input CreateAuditLogInput {
+    user_id: ID
+    action: String!
+    resource_type: String
+    resource_id: String
+    ip_address: String
+    user_agent: String
+    data: String
+}
+
+extend type Query {
+    systemSettings: [SystemSetting!]!
+    systemSetting(key: String!): SystemSetting
+    auditLogs(user_id: ID, resource_type: String, first: Int, page: Int): [AuditLog!]! @paginate
+}
+
+extend type Mutation {
+    updateSystemSetting(input: UpdateSystemSettingInput!): SystemSetting!
+    deleteSystemSetting(key: String!): Boolean!
+    createAuditLog(input: CreateAuditLogInput!): AuditLog! @create
+}

@@ -1,0 +1,75 @@
+type Enrollment {
+    id: ID!
+    user_id: ID!
+    course_id: ID!
+    enrolled_at: DateTime!
+    status: EnrollmentStatus!
+    progress_percent: Float!
+    expires_at: DateTime
+    price_paid: Float!
+    currency: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+    user: User! @belongsTo
+    course: Course! @belongsTo
+    payments: [Payment!]!
+    certificate: Certificate @belongsTo
+}
+
+type Payment {
+    id: ID!
+    enrollment_id: ID
+    user_id: ID!
+    course_id: ID!
+    amount: Float!
+    currency: String!
+    method: String!
+    status: PaymentStatus!
+    transaction_ref: String
+    payment_data: String
+    paid_at: DateTime
+    created_at: DateTime!
+    updated_at: DateTime!
+    enrollment: Enrollment @belongsTo
+    user: User! @belongsTo
+    course: Course! @belongsTo
+}
+
+input EnrollCourseInput {
+    user_id: ID!
+    course_id: ID!
+}
+
+input CreatePaymentInput {
+    enrollment_id: ID
+    user_id: ID!
+    course_id: ID!
+    amount: Float!
+    currency: String
+    method: String!
+    transaction_ref: String
+    payment_data: String
+}
+
+input UpdatePaymentInput {
+    status: PaymentStatus
+    transaction_ref: String
+    payment_data: String
+    paid_at: DateTime
+}
+
+extend type Query {
+    enrollments(user_id: ID, course_id: ID, first: Int, page: Int): [Enrollment!]! @paginate
+    enrollment(id: ID!): Enrollment
+    payments(enrollment_id: ID, user_id: ID, first: Int, page: Int): [Payment!]! @paginate
+    payment(id: ID!): Payment
+}
+
+extend type Mutation {
+    enrollCourse(input: EnrollCourseInput!): Enrollment! @create
+    unenrollCourse(enrollment_id: ID!): Boolean!
+    updateEnrollmentStatus(id: ID!, status: EnrollmentStatus!): Enrollment!
+    createPayment(input: CreatePaymentInput!): Payment! @create
+    updatePayment(id: ID!, input: UpdatePaymentInput!): Payment! @update
+    deletePayment(id: ID!): Boolean!
+}

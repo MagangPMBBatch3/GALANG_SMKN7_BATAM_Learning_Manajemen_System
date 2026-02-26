@@ -1,0 +1,44 @@
+type LessonProgress {
+    id: ID!
+    user_id: ID!
+    lesson_id: ID!
+    course_id: ID!
+    completed_at: DateTime
+    is_completed: Boolean!
+    updated_at: DateTime!
+    user: User! @belongsTo
+    lesson: Lesson! @belongsTo
+    course: Course! @belongsTo
+}
+
+type Certificate {
+    id: ID!
+    enrollment_id: ID!
+    user_id: ID!
+    course_id: ID!
+    issued_at: DateTime!
+    cert_number: String!
+    pdf_url: String
+    digital_signature: String
+    data: String
+    user: User! @belongsTo
+    course: Course! @belongsTo
+    enrollment: Enrollment! @belongsTo
+}
+
+extend type Query {
+    lessonProgress(id: ID! @eq): LessonProgress @find
+    lessonProgresses: [LessonProgress!]! @all
+    lessonProgressesPaginated(
+        first: Int! @rules(apply: ["min:1", "max:100"])
+        page: Int
+    ): [LessonProgress!]! @paginate
+
+    certificates(user_id: ID @where(operator: "="), first: Int, page: Int): [Certificate!]! @paginate(resolver: "App\\GraphQL\\Queries\\Certificate")
+    certificate(id: ID! @eq): Certificate @find
+}
+
+extend type Mutation {
+    markLessonCompleted(lesson_id: ID!, course_id: ID!): LessonProgress @create
+    generateCertificate(course_id: ID!): Certificate @create
+}

@@ -1,0 +1,24 @@
+scalar Date
+scalar DateTime
+
+#import ./Enums/schema.graphql
+#import ./User/schema.graphql
+#import ./Course/schema.graphql
+#import ./Enrollment/schema.graphql
+#import ./Quiz/schema.graphql
+#import ./Forum/schema.graphql
+#import ./Progress/schema.graphql
+#import ./Review/schema.graphql
+#import ./Gamification/schema.graphql
+#import ./Notification/schema.graphql
+#import ./Stats/schema.graphql
+#import ./System/schema.graphql
+#import ./Wishlist/schema.graphql
+
+type PageInfo {
+    hasMorePages: Boolean!
+    currentPage: Int!
+    lastPage: Int!
+    perPage: Int!
+    total: Int!
+}

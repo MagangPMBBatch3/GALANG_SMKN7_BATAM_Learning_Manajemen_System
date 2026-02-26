@@ -1,0 +1,37 @@
+type CourseReview {
+    id: ID!
+    course_id: ID!
+    user_id: ID!
+    rating: Int!
+    title: String
+    body: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    course: Course! @belongsTo
+    user: User! @belongsTo
+}
+
+input CreateReviewInput {
+    course_id: ID!
+    user_id: ID!
+    rating: Int!
+    title: String
+    body: String
+}
+
+input UpdateReviewInput {
+    rating: Int
+    title: String
+    body: String
+}
+
+extend type Query {
+    courseReviews(course_id: ID!, first: Int, page: Int): [CourseReview!]! @paginate
+    courseReview(id: ID!): CourseReview
+}
+
+extend type Mutation {
+    createReview(input: CreateReviewInput!): CourseReview! @create
+    updateReview(id: ID!, input: UpdateReviewInput!): CourseReview! @update
+    deleteReview(id: ID!): Boolean!
+}

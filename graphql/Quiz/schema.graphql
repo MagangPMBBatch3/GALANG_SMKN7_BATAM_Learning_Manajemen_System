@@ -1,0 +1,135 @@
+type Quiz {
+    id: ID!
+    course_id: ID
+    lesson_id: ID
+    title: String
+    description: String
+    passing_score: Int!
+    time_limit_seconds: Int
+    attempts_allowed: Int
+    created_at: DateTime!
+    updated_at: DateTime!
+    course: Course @belongsTo
+    lesson: Lesson @belongsTo
+    questions: [Question!]!
+    submissions: [QuizSubmission!]!
+}
+
+type Question {
+    id: ID!
+    quiz_id: ID!
+    type: QuestionType!
+    question_text: String!
+    points: Float!
+    meta: String
+    position: Int!
+    created_at: DateTime!
+    updated_at: DateTime!
+    quiz: Quiz! @belongsTo
+    choices: [Choice!]!
+}
+
+type Choice {
+    id: ID!
+    question_id: ID!
+    text: String!
+    is_correct: Boolean!
+    position: Int!
+    question: Question! @belongsTo
+}
+
+type QuizSubmission {
+    id: ID!
+    quiz_id: ID!
+    user_id: ID!
+    started_at: DateTime!
+    finished_at: DateTime
+    score: Float
+    status: SubmissionStatus!
+    answers: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    quiz: Quiz! @belongsTo
+    user: User! @belongsTo
+}
+
+input CreateQuizInput {
+    course_id: ID
+    lesson_id: ID
+    title: String
+    description: String
+    passing_score: Int
+    time_limit_seconds: Int
+    attempts_allowed: Int
+}
+
+input UpdateQuizInput {
+    title: String
+    description: String
+    passing_score: Int
+    time_limit_seconds: Int
+    attempts_allowed: Int
+}
+
+input CreateQuestionInput {
+    quiz_id: ID!
+    type: QuestionType!
+    question_text: String!
+    points: Float
+    meta: String
+    position: Int
+}
+
+input UpdateQuestionInput {
+    type: QuestionType
+    question_text: String
+    points: Float
+    meta: String
+    position: Int
+}
+
+input CreateChoiceInput {
+    question_id: ID!
+    text: String!
+    is_correct: Boolean
+    position: Int
+}
+
+input UpdateChoiceInput {
+    text: String
+    is_correct: Boolean
+    position: Int
+}
+
+input SubmitQuizInput {
+    quiz_id: ID!
+    user_id: ID!
+    answers: String!
+}
+
+extend type Query {
+    quizzes(course_id: ID, lesson_id: ID, first: Int, page: Int): [Quiz!]! @paginate
+    quiz(id: ID!): Quiz
+    questions(quiz_id: ID!, first: Int, page: Int): [Question!]! @paginate
+    question(id: ID!): Question
+    choices(question_id: ID!, first: Int, page: Int): [Choice!]! @paginate
+    choice(id: ID!): Choice
+    quizSubmissions(quiz_id: ID, user_id: ID, first: Int, page: Int): [QuizSubmission!]! @paginate
+    quizSubmission(id: ID!): QuizSubmission
+}
+
+extend type Mutation {
+    createQuiz(input: CreateQuizInput!): Quiz! @create
+    updateQuiz(id: ID!, input: UpdateQuizInput!): Quiz! @update
+    deleteQuiz(id: ID!): Boolean!
+    createQuestion(input: CreateQuestionInput!): Question! @create
+    updateQuestion(id: ID!, input: UpdateQuestionInput!): Question! @update
+    deleteQuestion(id: ID!): Boolean!
+    createChoice(input: CreateChoiceInput!): Choice! @create
+    updateChoice(id: ID!, input: UpdateChoiceInput!): Choice! @update
+    deleteChoice(id: ID!): Boolean!
+    submitQuiz(input: SubmitQuizInput!): QuizSubmission! @create
+    gradeSubmission(id: ID!, score: Float!): QuizSubmission!
+}
+ 
+ 

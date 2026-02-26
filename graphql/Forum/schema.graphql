@@ -1,0 +1,94 @@
+type ForumThread {
+    id: ID!
+    course_id: ID
+    lesson_id: ID
+    user_id: ID!
+    title: String
+    body: String
+    is_locked: Boolean!
+    is_sticky: Boolean!
+    created_at: DateTime!
+    updated_at: DateTime!
+    course: Course @belongsTo
+    lesson: Lesson @belongsTo
+    user: User! @belongsTo
+    posts: [ForumPost!]!
+}
+
+type ForumPost {
+    id: ID!
+    thread_id: ID!
+    user_id: ID!
+    parent_post_id: ID
+    body: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    thread: ForumThread! @belongsTo
+    user: User! @belongsTo
+    parent_post: ForumPost @belongsTo
+    replies: [ForumPost!]!
+    likes: [PostLike!]!
+    like_count: Int!
+}
+
+type PostLike {
+    id: ID!
+    post_id: ID!
+    user_id: ID!
+    created_at: DateTime!
+    updated_at: DateTime!
+    post: ForumPost! @belongsTo
+    user: User! @belongsTo
+}
+
+input CreateThreadInput {
+    course_id: ID
+    lesson_id: ID
+    user_id: ID!
+    title: String!
+    body: String!
+}
+
+input UpdateThreadInput {
+    title: String
+    body: String
+    is_locked: Boolean
+    is_sticky: Boolean
+}
+
+input CreatePostInput {
+    thread_id: ID!
+    user_id: ID!
+    parent_post_id: ID
+    body: String!
+}
+
+input UpdatePostInput {
+    body: String
+}
+
+input LikePostInput {
+    post_id: ID!
+    user_id: ID!
+}
+
+extend type Query {
+    forumThreads(course_id: ID, lesson_id: ID, first: Int, page: Int): [ForumThread!]! @paginate
+    forumThread(id: ID!): ForumThread
+    forumPosts(thread_id: ID!, first: Int, page: Int): [ForumPost!]! @paginate
+    forumPost(id: ID!): ForumPost
+    postLikes(post_id: ID!, first: Int, page: Int): [PostLike!]! @paginate
+}
+
+extend type Mutation {
+    createThread(input: CreateThreadInput!): ForumThread! @create
+    updateThread(id: ID!, input: UpdateThreadInput!): ForumThread! @update
+    deleteThread(id: ID!): Boolean!
+    lockThread(id: ID!): ForumThread!
+    stickyThread(id: ID!): ForumThread!
+    createPost(input: CreatePostInput!): ForumPost! @create
+    updatePost(id: ID!, input: UpdatePostInput!): ForumPost! @update
+    deletePost(id: ID!): Boolean!
+    likePost(input: LikePostInput!): PostLike! @create
+    unlikePost(post_id: ID!, user_id: ID!): Boolean!
+}

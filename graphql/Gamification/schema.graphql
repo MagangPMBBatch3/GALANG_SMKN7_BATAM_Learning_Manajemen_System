@@ -1,0 +1,72 @@
+type Badge {
+    id: ID!
+    code: String!
+    name: String!
+    description: String
+    icon_url: String
+    created_at: DateTime!
+    updated_at: DateTime!
+    users: [User!]!
+}
+
+type UserBadge {
+    id: ID!
+    user_id: ID!
+    badge_id: ID!
+    awarded_at: DateTime!
+    user: User! @belongsTo
+    badge: Badge! @belongsTo
+}
+
+type Point {
+    id: ID!
+    user_id: ID!
+    amount: Int!
+    reason: String
+    data: String
+    created_at: DateTime!
+    user: User! @belongsTo
+}
+
+input CreateBadgeInput {
+    code: String!
+    name: String!
+    description: String
+    icon_url: String
+}
+
+input UpdateBadgeInput {
+    code: String
+    name: String
+    description: String
+    icon_url: String
+}
+
+input AwardBadgeInput {
+    user_id: ID!
+    badge_id: ID!
+}
+
+input AddPointsInput {
+    user_id: ID!
+    amount: Int!
+    reason: String
+    data: String
+}
+
+extend type Query {
+    badges(first: Int, page: Int): [Badge!]! @paginate
+    badge(id: ID!): Badge
+    userBadges(user_id: ID @where(operator: "=")): [UserBadge!]! @all
+    points(user_id: ID @where(operator: "=")): [Point!]! @all
+    pointsPaginated(user_id: ID @where(operator: "="), first: Int, page: Int): [Point!]! @paginate(resolver: "App\\GraphQL\\Queries\\Points")
+}
+
+extend type Mutation {
+    createBadge(input: CreateBadgeInput!): Badge! @create
+    updateBadge(id: ID!, input: UpdateBadgeInput!): Badge! @update
+    deleteBadge(id: ID!): Boolean!
+    awardBadge(input: AwardBadgeInput!): UserBadge! @create
+    revokeBadge(user_id: ID!, badge_id: ID!): Boolean!
+    addPoints(input: AddPointsInput!): Point! @create
+}
